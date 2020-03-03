@@ -51,6 +51,7 @@ local checkFuncs = {
 Utils.sync_config(checkConfig,hostConfig)
 
 for configName , configValue in pairs(checkConfig) do
+	ngx.say("BASE>当前检查项",configName,"状态:",configValue,"<br>")
 	if configValue==true then
 		ngx.log(ngx.WARN,"即将测试",configName)
 		local status = checkFuncs[configName](Flag.base,red)
@@ -66,13 +67,14 @@ end
 -- uri层覆盖host层
 Utils.sync_config(checkConfig,uriConfig)
 for configName , configValue in pairs(checkConfig) do
+	ngx.say("CUSTOM>当前检查项",configName,"状态:",configValue,"<br>")
 	if configValue==true then
 		ngx.log(ngx.WARN,"即将测试",configName)
 		local status = checkFuncs[configName](Flag.base,red)
 		if status~=true then
 			-- require("log")
 			-- 此处Rewrite
-			ngx.say("非法Access ,在base中触发 ",configName)
+			ngx.say("非法Access ,在custom中触发 ",configName)
 			return
 		end
 	end

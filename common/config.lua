@@ -31,7 +31,7 @@ swtich.cookie_check= true
 swtich.ua_check = true
 
 -- CC Attack Defense status
-swtich.cc_defence = true
+swtich.cc_defense = true
 
 -- frequency limit
 local option ={}
