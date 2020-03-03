@@ -59,7 +59,7 @@ local function headerCheck(flag,red)
     elseif flag==Flag.custom then
         set,err = red:zrange(Utils.custom_key_gen("HEADER"),0,-1)
     end
-    if err~=nil then ngx.log(ngx.ERR,"Failed to retrive Data in cookieCheck err: ",err) end
+    if err~=nil then ngx.log(ngx.ERR,"Failed to retrive Data in headerCheck err: ",err) end
     for _,line in ipairs(set) do
         for _ ,item in pairs(headers) do
             if ngx.re.match(item,line,"jo") ~= nil then return false end
@@ -78,7 +78,7 @@ local function ccDefense(flag,red)
     local host = ngx.var.host
     if getIp()=="127.0.0.1" then return true end
     local ccToken = getIp()..host..attackURI
-    local ccConfig =option.cc_rate
+    local ccConfig =Option.cc_rate
     local limit = ngx.shared.limit
     if flag == Flag.base then
         local data = red:get(Utils.base_key_gen("CC"))
@@ -108,8 +108,6 @@ local function ccDefense(flag,red)
 end
 
 local function getArgsCheck(flag,red)
-     -- get_args non-table 
-     -- TODO: check get_args type
     local get_args = ngx.req.get_uri_args()
     local set,err
     if flag==Flag.base then
@@ -135,9 +133,9 @@ local function blackIpCheck(flag,red)
     elseif flag==Flag.custom then
         set,err = red:zrange(Utils.custom_key_gen("BLACKIP"),0,-1)
     end
-    if err~=nil then ngx.log(ngx.ERR,"Failed to retrive Data in ipCheck err: ",err) end
+    if err~=nil then ngx.log(ngx.ERR,"Failed to retrive Data in blackIpCheck err: ",err) end
     for _,item in ipairs(set) do 
-        if clientIp == value then
+        if clientIp == item then
             return false
         end
     end
@@ -167,10 +165,10 @@ local function whiteIpCheck(flag,red)
     elseif flag == Flag.custom then
         set ,err = red:SMEMBERS(Utils.custom_key_gen("WHITEIP"))
     end
-    if err~=nil then ngx.log(ngx.ERR,"DEBUGINFO error when retrive data in WhiteIpCheck") end
+    if err~=nil then ngx.log(ngx.ERR,"DEBUGINFO error when retrive data in whiteIpCheck") end
     local clientIp = getIp()
-    for key, value in ipairs(set) do
-        if clientIp == value then
+    for key, item in ipairs(set) do
+        if clientIp == item then
             return true
         else
             return false

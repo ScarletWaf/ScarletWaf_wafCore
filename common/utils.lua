@@ -44,6 +44,10 @@ local function getConfig(flag,red)
         config,err = red:hgetall(host)
     end
     if err~=nil then ngx.log(ngx.Err,"Fail to get Config for :",host);return end
+    ngx.say("检查 config<br>")
+    for i , v in pairs(config) do
+        ngx.say(i,"----->",v,"<br>")
+    end
     return config
 end
 
