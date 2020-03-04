@@ -2,7 +2,7 @@ local Config = require("config")
 local Option = Config.option
 local Flag = Config.flag
 local Key = Config.key
-local Utils = require("Utils")
+local Utils = require("utils")
 
 local function getIp(re)
     local client_IP = ngx.req.get_headers()["X-Real-IP"]
