@@ -3,6 +3,7 @@ local Option = Config.option
 local Flag = Config.flag
 local Key = Config.key
 local Utils = require("utils")
+local Libinjection = require "libinjection"
 
 local function getIp(re)
     local client_IP = ngx.req.get_headers()["X-Real-IP"]
@@ -176,6 +177,51 @@ local function whiteIpCheck(flag,red)
     end
 end
 
+local function libsqli_cookie_check()
+    local cookies =  ngx.var.http_cookie
+    local sqli,_ = Libinjection.sqli(cookies)
+    if (sqli==true) then
+        return false
+    else
+        return true
+    end
+end
+
+local function libsqli_get_check()
+    local args =  ngx.req.get_uri_args()
+    local sqli
+    for _,item in pairs(args)do
+        sqli = Libinjection.sqli(item)
+        if (sqli==true) then
+            return false
+        end
+    end
+    return true
+end
+
+local function libsqli_post_check()
+    local args =  ngx.req.get_post_args()
+    local sqli
+    for _,item in pairs(args)do
+        sqli = Libinjection.sqli(item)
+        if (sqli==true) then
+            return false
+        end
+    end
+    return true
+end
+
+local function libsqli_header_check()
+    local headers = ngx.req.get_headers()
+    local sqli
+    for _,item in pairs(headers)do
+        sqli = Libinjection.sqli(item)
+        if (sqli==true) then
+            return false
+        end
+    end
+    return true
+end
 
 
 local lib = {
@@ -186,7 +232,11 @@ local lib = {
     ip_blacklist = blackIpCheck,
     ip_whitelist = whiteIpCheck,
     cc_defense = ccDefense,
-    ua_check=uaCheck
+    ua_check = uaCheck,
+    libsqli_header_check=libsqli_header_check,
+    libsqli_post_check = libsqli_header_check,
+    libsqli_get_check = libsqli_get_check,
+    libsqli_cookie_check = libsqli_cookie_check
 }
 
 return lib
