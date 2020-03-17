@@ -2,36 +2,39 @@
 -- waf config file, to setting moudle enable='on'  disable='off'
 ---------------------------------------------------------------------
 -- waf status
-local swtich ={}
+local switch ={}
 
-swtich.waf_status = true
+switch.waf_status = true
 ---------------------------------------------------------------------
 -- url_whitelist status
-swtich.uri_whitelist = true
+switch.uri_whitelist = true
 
 -- ip_blacklist status
-swtich.ip_blacklist = true
+switch.ip_blacklist = true
 
 -- ip_whitelist status
-swtich.ip_whitelist = true
+switch.ip_whitelist = true
 
 -- passproxy status
-swtich.proxy_pass = true
+switch.proxy_pass = true
 
 -- get_args_check status
-swtich.get_args_check = true
+switch.get_args_check = true
 
 -- post_args_check status
-swtich.post_args_check = true
+switch.post_args_check = true
 
 -- Cookie_safe_check status
-swtich.cookie_check= true
+switch.cookie_check= true
 
 -- UA safe Check status
-swtich.ua_check = true
+switch.ua_check = true
 
 -- CC Attack Defense status
-swtich.cc_defense = true
+switch.cc_defense = true
+
+-- tokenlize sql detect
+switch.sql_token_check = true
 
 -- frequency limit
 local option ={}
@@ -57,7 +60,7 @@ flag.custom=1
 
 -- config表
 local config={}
-config.swtich =swtich
+config.switch =switch
 config.option = option
 config.key = key
 config.flag = flag
