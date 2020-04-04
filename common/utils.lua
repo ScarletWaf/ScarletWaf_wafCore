@@ -4,7 +4,6 @@ local Cjson = require("cjson")
 
 
 local function getIp()
-    local red=ngx.ctx.red
     local client_IP = ngx.req.get_headers()["X-Real-IP"]
     if client_IP == nil then
         client_IP = ngx.req.get_headers()["X_Forwarded_For"]
@@ -27,11 +26,11 @@ end
 
 
 local function baseKeyGen(ruleName)
-    return ("BASE"..ruleName)
+    return (ngx.var.host.."@BASE@"..ruleName)
 end
 
 local function customKeyGen(ruleName)
-    return (ngx.var.host..ngx.var.uri..ruleName)
+    return (ngx.var.host.."@"..ngx.var.uri.."@"..ruleName)
 end
 
 
@@ -41,9 +40,9 @@ local function getConfig(flag,red)
     local config ,err
     local res={}
     if flag == Flag.custom then
-        config ,err=red:hgetall(host..uri)
+        config ,err=red:hgetall("CONFIG@"..host.."@"..uri)
     elseif flag == Flag.base then
-        config,err = red:hgetall(host)
+        config,err = red:hgetall("CONFIG@"..host.."@".."BASE")
     end
     if err~=nil then ngx.log(ngx.ERR,"Fail to get Config for :",host);return end
 

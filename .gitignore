@@ -4,3 +4,4 @@ test.lua
 waf.heyao.top.conf
 debug.lua
 showconfig.lua
+lualib/set.lua
