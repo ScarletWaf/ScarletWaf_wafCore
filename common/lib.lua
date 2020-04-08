@@ -6,6 +6,12 @@ local Utils = require("utils")
 local Libinjection = require "libinjection"
 
 local function getIp(re)
+    -- 由于waf是直接暴露在公网中的 因此只需要采用remote_addr即可
+    -- 而使用 X-Real-IP  X_Forwarded_For会给攻击者伪造ip的机会
+    -- local client_IP = ngx.req.get_headers()["X-Real-IP"]
+    -- if client_IP == nil then
+    --     client_IP = ngx.req.get_headers()["X_Forwarded_For"]
+    -- end
     if client_IP == nil then
         client_IP = ngx.var.remote_addr
     end
