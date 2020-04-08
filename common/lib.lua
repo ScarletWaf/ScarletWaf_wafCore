@@ -6,10 +6,6 @@ local Utils = require("utils")
 local Libinjection = require "libinjection"
 
 local function getIp(re)
-    local client_IP = ngx.req.get_headers()["X-Real-IP"]
-    if client_IP == nil then
-        client_IP = ngx.req.get_headers()["X_Forwarded_For"]
-    end
     if client_IP == nil then
         client_IP = ngx.var.remote_addr
     end
