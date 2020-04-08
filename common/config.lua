@@ -4,37 +4,37 @@
 -- waf status
 local switch ={}
 
-switch.waf_status = true
+switch.waf_status = false
 ---------------------------------------------------------------------
 -- url_whitelist status
-switch.uri_whitelist = true
+switch.uri_whitelist = false
 
 -- ip_blacklist status
-switch.ip_blacklist = true
+switch.ip_blacklist = false
 
 -- ip_whitelist status
-switch.ip_whitelist = true
+switch.ip_whitelist = false
 
 -- passproxy status
-switch.proxy_pass = true
+switch.proxy_pass = false
 
 -- get_args_check status
-switch.get_args_check = true
+switch.get_args_check = false
 
 -- post_args_check status
-switch.post_args_check = true
+switch.post_args_check = false
 
 -- Cookie_safe_check status
-switch.cookie_check= true
+switch.cookie_check= false
 
 -- UA safe Check status
-switch.ua_check = true
+switch.ua_check = false
 
 -- CC Attack Defense status
-switch.cc_defense = true
+switch.cc_defense = false
 
 -- tokenlize sql detect
-switch.sql_token_check = true
+switch.sql_token_check = false
 
 -- frequency limit
 local option ={}
@@ -57,13 +57,15 @@ local flag={}
 flag.base=0
 flag.custom=1
 
+-- 增加环境变量，控制DEBUG输出
+local develop=false
 
 -- config表
 local config={}
 config.switch =switch
 config.option = option
-config.key = key
 config.flag = flag
+config.develop=develop
 
 
 return config

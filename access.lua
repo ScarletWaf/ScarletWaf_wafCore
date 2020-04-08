@@ -10,6 +10,9 @@ local red = ngx.ctx.red
 local hostConfig = Utils.get_config(Flag.base,red)
 local uriConfig = Utils.get_config(Flag.custom,red)
 
+-- 设置反代目标
+ngx.var.client = hostConfig.client
+
 local accessConfig ={
     	["waf_status"] = Switch.waf_status,        -- 特判
         ["ip_whitelist"] = Switch.ip_whitelist,    -- 特判
@@ -83,15 +86,15 @@ end
 
 
 for configName , configValue in pairs(checkConfig) do
-	ngx.say("BASE>当前检查项",configName,"状态:",configValue,"<br>")
+	if Config.develop then ngx.say("BASE>当前检查项",configName,"状态:",configValue,"<br>")end
 	if configValue==true then
-		ngx.log(ngx.WARN,"即将测试",configName)
+		if Config.develop then ngx.log(ngx.WARN,"即将测试",configName) end
 		local status = checkFuncs[configName](Flag.base,red)
 		if status~=true then
 			-- require("log")
 			-- 此处Rewrite
 			Log.record(Utils.log_gen(configName),red)
-			ngx.say("非法Access ,在base中触发 ",configName)
+			if Config.develop then ngx.say("非法Access ,在base中触发 ",configName) end
 			return
 		end
 	end
@@ -100,9 +103,9 @@ end
 -- uri层覆盖host层
 Utils.sync_config(checkConfig,uriConfig)
 for configName , configValue in pairs(checkConfig) do
-	ngx.say("CUSTOM>当前检查项",configName,"状态:",configValue,"<br>")
+	if Config.develop then ngx.say("CUSTOM>当前检查项",configName,"状态:",configValue,"<br>") end
 	if configValue==true then
-		ngx.log(ngx.WARN,"即将测试",configName)
+		if Config.develop then ngx.log(ngx.WARN,"即将测试",configName) end
 		local status = checkFuncs[configName](Flag.custom,red)
 		if status~=true then
 			-- require("log")
@@ -112,7 +115,6 @@ for configName , configValue in pairs(checkConfig) do
 		end
 	end
 end
-ngx.say("Welcome")
 
 
 

@@ -43,9 +43,9 @@ local function getConfig(flag,red)
     if err~=nil then ngx.log(ngx.ERR,"Fail to get Config for :",host);return end
 
     for i , v in pairs(config) do
-        if (v== "true")then
+        if (v== "true") or (v=="1")then
             config[i]=true
-        elseif (v=="false")then
+        elseif (v=="false") or (v=="0")then
             config[i]=false
         end
     end
@@ -54,9 +54,9 @@ local function getConfig(flag,red)
             res[config[i-1]]=config[i]
         end
     end
-    ngx.say("检查 config<br>")
+    if Config.develop then ngx.say("检查 config<br>")end
     for i , v in pairs(res) do
-        ngx.say(type(i),"  ",i,"----->",type(v),"  ",v,"<br>")
+        if Config.develop then ngx.say(type(i),"  ",i,"----->",type(v),"  ",v,"<br>") end
     end
     return res
 end
