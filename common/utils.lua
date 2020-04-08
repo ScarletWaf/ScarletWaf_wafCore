@@ -1,13 +1,9 @@
 local Config = require("config")
 local Flag = Config.flag
+local Cjson = require("cjson")
 
 
 local function getIp()
-    -- local red=ngx.ctx.red
-    -- local client_IP = ngx.req.get_headers()["X-Real-IP"]
-    -- if client_IP == nil then
-    --     client_IP = ngx.req.get_headers()["X_Forwarded_For"]
-    -- end
     if client_IP == nil then
         client_IP = ngx.var.remote_addr
     end
@@ -26,11 +22,11 @@ end
 
 
 local function baseKeyGen(ruleName)
-    return ("BASE"..ruleName)
+    return (ngx.var.host.."@BASE@"..ruleName)
 end
 
 local function customKeyGen(ruleName)
-    return (ngx.var.host..ngx.var.uri..ruleName)
+    return (ngx.var.host.."@"..ngx.var.uri.."@"..ruleName)
 end
 
 
@@ -38,26 +34,50 @@ local function getConfig(flag,red)
     local host = ngx.var.host
     local uri = ngx.var.uri
     local config ,err
+    local res={}
     if flag == Flag.custom then
-        config ,err=red:hgetall(host..uri)
+        config ,err=red:hgetall("CONFIG@"..host.."@"..uri)
     elseif flag == Flag.base then
-        config,err = red:hgetall(host)
+        config,err = red:hgetall("CONFIG@"..host.."@".."BASE")
     end
-    if err~=nil then ngx.log(ngx.Err,"Fail to get Config for :",host);return end
-    ngx.say("检查 config<br>")
+    if err~=nil then ngx.log(ngx.ERR,"Fail to get Config for :",host);return end
+
     for i , v in pairs(config) do
-        ngx.say(i,"----->",v,"<br>")
+        if (v== "true")then
+            config[i]=true
+        elseif (v=="false")then
+            config[i]=false
+        end
     end
-    return config
+    for i = 1,#config do
+        if (i%2==0)then
+            res[config[i-1]]=config[i]
+        end
+    end
+    ngx.say("检查 config<br>")
+    for i , v in pairs(res) do
+        ngx.say(type(i),"  ",i,"----->",type(v),"  ",v,"<br>")
+    end
+    return res
 end
 
+-- redis中只能存字符串 存进去的布尔值 拿出来就成字符串了
 local function syncConfig(base,target)
     if type(base)~=type({}) or type(target)~=type({}) then ngx.log(ngx.ERR,"Table needed in syncConfig");return; end
     for name ,value in pairs(base) do
-        if target[name]~=nil then base[name] = target[name] end
+        if target[name]~=nil  then base[name] = target[name] end
     end
 end
 
+local function logGen(configName)
+    local item ={}
+    item.time=ngx.now()
+    item.rule=configName
+    item.ip=ngx.var.remote_addr
+    item.uri=ngx.var.uri
+    item = Cjson.encode(item)
+    return item
+end
 
 
 local utils={}
@@ -67,6 +87,7 @@ utils.get_config= getConfig
 utils.sync_config = syncConfig
 utils.hit_rule=hitRule
 utils.hit_uri=hitURI
+utils.log_gen=logGen
 
 return utils
 
