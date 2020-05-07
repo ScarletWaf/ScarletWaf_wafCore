@@ -12,6 +12,7 @@ local uriConfig = Utils.get_config(Flag.custom,red)
 
 -- 设置反代目标
 ngx.var.client = hostConfig.client
+ngx.var.domain = hostConfig.domain
 
 local accessConfig ={
     	["waf_status"] = Switch.waf_status,        -- 特判
