@@ -34,7 +34,7 @@ switch.ua_check = false
 switch.cc_defense = false
 
 -- tokenlize sql detect
-switch.sql_token_check = false
+switch.libsqli_token_check = false
 
 -- frequency limit
 local option ={}
@@ -67,6 +67,7 @@ config.option = option
 config.flag = flag
 config.develop=develop
 
+-- 黑页配置
 
 return config
 
