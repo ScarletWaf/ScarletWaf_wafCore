@@ -79,6 +79,14 @@ local function logGen(configName)
     return item
 end
 
+-- 妄想两次URLencode来绕过 👨笑了 Simple trick only work when developer is a idiot -> who decode again after framework does...
+local function Unescape(args)
+    for index,item in pairs(args) do
+        args[index]=ngx.unescape_uri(item)
+    end
+    return args
+end
+
 
 local utils={}
 utils.base_key_gen=baseKeyGen
@@ -88,6 +96,7 @@ utils.sync_config = syncConfig
 utils.hit_rule=hitRule
 utils.hit_uri=hitURI
 utils.log_gen=logGen
+utils.unescape=Unescape
 
 return utils
 

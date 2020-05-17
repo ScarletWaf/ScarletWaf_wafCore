@@ -6,4 +6,8 @@ if not ok then
     ngx.say("failed to connect: ", err)
     -- return false
 end
+local res,ok = red:auth("heyao")
+if not res then
+	ngx.log(ngx.ERR,"failed to auth redis")
+end
 ngx.ctx.red = red
